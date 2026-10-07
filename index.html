@@ -72,6 +72,9 @@
   .contact p{max-width:560px;margin:18px auto 24px}
   footer{text-align:center;color:var(--muted);font-size:.85rem;padding:22px 0;border-top:1px solid var(--line)}
 
+  .toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);background:var(--navy);color:#fff;padding:12px 20px;border-radius:10px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.2);opacity:0;pointer-events:none;transition:.3s;z-index:20;max-width:90vw;text-align:center}
+  .toast.show{opacity:1;transform:translate(-50%,0)}
+
   @media (max-width:760px){
     nav ul{display:none}
     .hero .wrap{flex-direction:column;text-align:center}
@@ -107,7 +110,7 @@
       <div class="btns">
         <a class="btn primary" href="Liji_Babu_Resume.pdf" download>Download Resume</a>
         <a class="btn ghost" href="https://www.linkedin.com/in/liji-babu-696954192/" target="_blank" rel="noopener">LinkedIn</a>
-        <a class="btn ghost" href="mailto:lijibabuplr@gmail.com">Email me</a>
+        <a class="btn ghost mailbtn" href="mailto:lijibabuplr@gmail.com">Email me</a>
       </div>
     </div>
   </div>
@@ -259,14 +262,36 @@
     <h2>Let's connect</h2>
     <p>I am open to business management, operations and data leadership roles. Feel free to reach out.</p>
     <div class="btns" style="justify-content:center">
-      <a class="btn primary" href="mailto:lijibabuplr@gmail.com">lijibabuplr@gmail.com</a>
+      <a class="btn primary mailbtn" href="mailto:lijibabuplr@gmail.com">lijibabuplr@gmail.com</a>
       <a class="btn ghost" href="https://www.linkedin.com/in/liji-babu-696954192/" target="_blank" rel="noopener">LinkedIn</a>
-      <a class="btn ghost" href="Liji_Babu_Resume.pdf" download>Résumé (PDF)</a>
+      <a class="btn ghost" href="Liji_Babu_Resume.pdf" download>Resume (PDF)</a>
     </div>
   </div>
 </section>
 
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
 <footer>© <span id="y"></span> Liji Babu · Munich, Germany</footer>
-<script>document.getElementById('y').textContent=new Date().getFullYear();</script>
+<script>
+document.getElementById('y').textContent=new Date().getFullYear();
+(function(){
+  var EMAIL='lijibabuplr@gmail.com', toast=document.getElementById('toast'), t;
+  function show(msg){toast.textContent=msg;toast.classList.add('show');clearTimeout(t);t=setTimeout(function(){toast.classList.remove('show')},3500);}
+  function fallbackCopy(){
+    var ta=document.createElement('textarea');ta.value=EMAIL;ta.style.position='fixed';ta.style.opacity='0';
+    document.body.appendChild(ta);ta.select();var ok=false;try{ok=document.execCommand('copy')}catch(e){}
+    document.body.removeChild(ta);return ok;
+  }
+  document.querySelectorAll('.mailbtn').forEach(function(b){
+    b.addEventListener('click',function(){
+      // the mailto: link still tries to open the visitor's mail app; we also copy the address
+      var done=function(ok){show(ok?'Email address copied: '+EMAIL:'My email: '+EMAIL)};
+      if(navigator.clipboard&&navigator.clipboard.writeText){
+        navigator.clipboard.writeText(EMAIL).then(function(){done(true)},function(){done(fallbackCopy())});
+      }else{done(fallbackCopy())}
+    });
+  });
+})();
+</script>
 </body>
 </html>
